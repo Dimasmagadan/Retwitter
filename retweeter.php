@@ -16,7 +16,7 @@
 
 // Set username - which is also the hashtag retweeter will look for
 $username = 'magadantraffic';
-$hashtag = 'm49';
+$hashtag = array('m49','magadan','магадан');
 
 // Setup database connection
 $dbserver = '';
@@ -109,20 +109,21 @@ if ($responseCode == 200)
 			}
 			
       // set hashtag and tweet to lower for case-insensitive comparison
-			// $myHashtag = "#" . strtolower($username); 
-			$myHashtag = "#" . strtolower($hashtag); 
-			if ((strpos(strtolower($strTweet),$myHashtag) > -1) && $insert == 1) 
-			{
-			
-				$myTweet = mysql_real_escape_string($strTweet,$db_handle);
- 
-				$myQuery = "INSERT into tweet (PostId, User, Tweet, PlainPostID) VALUES ('" .
-					trim($strPostId) . "','" . trim($strUser) .
-					"','" . trim($myTweet) ."','". trim($strPlainPostId)  ."');";		
+			// $myHashtag = "#" . strtolower($username);
+			foreach ($hashtag as $tag) {
+				$myHashtag = "#" . strtolower($tag); 
+				if ((strpos(strtolower($strTweet),$myHashtag) > -1) && $insert == 1) {
+				
+					$myTweet = mysql_real_escape_string($strTweet,$db_handle);
+	 
+					$myQuery = "INSERT into tweet (PostId, User, Tweet, PlainPostID) VALUES ('" .
+						trim($strPostId) . "','" . trim($strUser) .
+						"','" . trim($myTweet) ."','". trim($strPlainPostId)  ."');";		
+		
+					$result = mysql_query($myQuery) or die('Couldnt insert tweet' . mysql_error());
 	
-				$result = mysql_query($myQuery) or die('Couldnt insert tweet' . mysql_error());
-
-				// echo "inserting tweet";					
+					// echo "inserting tweet";					
+				}
 			}
 		} // end if for != $username
 
